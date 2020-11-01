@@ -1,0 +1,74 @@
+$icon-sizes: 20, 30, 40, 50, 60;
+
+/* iOS Cordova Tweak */
+.device-cordova.device-ios {
+  height: 100vh;
+}
+/* Your app custom styles here */
+
+body {
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+.no-subtitle-limit {
+	.item-subtitle {
+		white-space: normal;
+		word-break: break-word;
+	}
+}
+
+.no-title-limit {
+	.item-title, &.simple-list li {
+		white-space: normal;
+		word-break: break-word;
+	}
+}
+
+.overlay-center {
+	position: absolute !important;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.height-100 {
+	height: 100%;
+}
+
+.toolbar-progress {
+	height: 125px;
+}
+
+@each $size in $icon-sizes {
+	.icon-#{$size} {
+		height: #{$size}px;
+		width: #{$size}px;
+	}
+}
+
+.page[data-name='home'] {
+	.list-new-updated .item-content {
+		height: 68px;
+	}
+
+	@media (min-width: 700px) {
+		.slide-new-updated {
+			max-width: 350px;
+		}
+	}
+}
+
+.popover-qrcode {
+	width: 250px;
+	height: 250px;
+
+	img {
+		margin: 5px;
+	}
+}
+
+.position-fixed {
+	position: fixed;
+}

@@ -1,0 +1,48 @@
+{
+	"name": "com.ablota.store",
+	"displayName": "Ablota Store",
+	"version": "1.0.0",
+	"cordova": {
+		"plugins": {
+			"cordova-plugin-statusbar": {},
+			"cordova-plugin-keyboard": {},
+			"cordova-plugin-wkwebview-file-xhr": {},
+			"cordova-plugin-whitelist": {},
+			"cordova-clipboard": {},
+			"cordova-plugin-file": {},
+			"cordova-plugin-device": {},
+			"cordova-plugin-network-information": {},
+			"cordova-plugin-inappbrowser": {},
+			"cordova-plugin-x-socialsharing": {
+				"PHOTO_LIBRARY_ADD_USAGE_DESCRIPTION": "This app requires photo library access to function properly.",
+				"PHOTO_LIBRARY_USAGE_DESCRIPTION": "This app requires photo library access to function properly."
+			},
+			"cordova-plugin-splashscreen": {},
+			"ablota-store-cordova-plugin": {}
+		},
+		"platforms": [
+			"ios",
+			"electron",
+			"android"
+		]
+	},
+	"devDependencies": {
+		"@ablota/store-cordova-plugin": "^1.0.0",
+		"cordova-android": "^9.0.0",
+		"cordova-clipboard": "^1.3.0",
+		"cordova-electron": "^2.0.0",
+		"cordova-ios": "^6.1.1",
+		"cordova-plugin-device": "^2.0.3",
+		"cordova-plugin-file": "^6.0.2",
+		"cordova-plugin-inappbrowser": "^4.0.0",
+		"cordova-plugin-keyboard": "^1.2.0",
+		"cordova-plugin-network-information": "^2.0.2",
+		"cordova-plugin-splashscreen": "^6.0.0",
+		"cordova-plugin-statusbar": "^2.4.3",
+		"cordova-plugin-whitelist": "^1.3.4",
+		"cordova-plugin-wkwebview-engine": "^1.2.1",
+		"cordova-plugin-wkwebview-file-xhr": "^3.0.0",
+		"cordova-plugin-x-socialsharing": "^6.0.2",
+		"es6-promise-plugin": "^4.2.2"
+	}
+}

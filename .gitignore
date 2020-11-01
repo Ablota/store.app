@@ -1,0 +1,13 @@
+# Project
+www/
+cordova/platforms/
+cordova/plugins/
+cordova/www/
+cordova/build.json
+
+# Miscellaneous
+.idea/
+node_modules/
+*.log*
+.DS_Store
+Thumbs.db

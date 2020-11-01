@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<% if (process.env.NODE_ENV === 'production') { %>
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content: https://store.ablota.com">
+		<% } %>
+		<meta content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover" name="viewport">
+		<meta content="#007aff" name="theme-color">
+		<meta content="telephone=no" name="format-detection">
+		<meta content="no" name="msapplication-tap-highlight">
+		<meta property="og:image:width" content="128">
+		<meta property="og:image:height" content="128">
+		<meta property="og:description" content="The universal, decentralized and open source app store.">
+		<meta property="og:title" content="Ablota Store">
+		<meta property="og:url" content="https://store.ablota.com">
+		<meta property="og:image" content="https://store.ablota.com/static/icons/favicon.png">
+		<meta name="author" content="Ablota (StarApps GmbH)">
+		<meta name="description" content="The universal, decentralized and open source app store.">
+		<meta name="robots" content="noarchive, noimageindex">
+		<title>Ablota Store</title>
+		<% if (process.env.TARGET === 'web') { %>
+		<meta content="yes" name="apple-mobile-web-app-capable">
+		<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
+		<link href="static/icons/apple-touch-icon.png" rel="apple-touch-icon">
+		<link href="static/icons/favicon.png" rel="icon">
+		<link href="/manifest.json" rel="manifest">
+		<% } %>
+	</head>
+	<body>
+		<div id="app"></div>
+		<% if (process.env.TARGET === 'cordova') { %>
+		<script src="cordova.js"></script>
+		<% } %>
+	</body>
+</html>
