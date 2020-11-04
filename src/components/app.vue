@@ -24,7 +24,7 @@
 						return {
 							url: 'https://store.ablota.com/',
 							server: {
-								url: 'http://localhost:8000/'
+								url: 'https://api.store.ablota.com/'
 							},
 						};
 					},

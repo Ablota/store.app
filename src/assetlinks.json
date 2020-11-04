@@ -1,0 +1,14 @@
+[
+	{
+		"relation": [
+			"delegate_permission/common.handle_all_urls"
+		],
+		"target": {
+			"namespace": "android_app",
+			"package_name": "com.ablota.store",
+			"sha256_cert_fingerprints": [
+				"5E:A5:AE:2F:48:1E:00:E1:B0:A3:88:CA:4E:CC:0B:84:B3:89:1A:6C:0B:32:F5:9C:59:AA:B2:A0:71:A2:51:46"
+			]
+		}
+	}
+]

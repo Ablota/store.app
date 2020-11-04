@@ -27,7 +27,7 @@
 		]
 	},
 	"devDependencies": {
-		"@ablota/store-cordova-plugin": "^1.0.0",
+		"@ablota/store-cordova-plugin": "^1.0.1",
 		"cordova-android": "^9.0.0",
 		"cordova-clipboard": "^1.3.0",
 		"cordova-electron": "^2.0.0",

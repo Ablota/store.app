@@ -1,5 +1,5 @@
 import {fetchSource, localizeApp} from '../../js/utils';
-import { Device } from 'framework7';
+import {Device} from 'framework7';
 
 const state = () => ({
 	loading: false,
@@ -33,7 +33,7 @@ const getters = {
 				return {
 					...localizeApp(app, language),
 					sourceId,
-				}
+				};
 			}
 		}
 
@@ -49,7 +49,7 @@ const getters = {
 			packages.push(appPackage);
 		}));
 
-		return packages.sort((a ,b) => a.versionCode < b.versionCode ? 1 : -1);
+		return packages.sort((a, b) => a.versionCode < b.versionCode ? 1 : -1);
 	},
 };
 

@@ -268,11 +268,11 @@ export default {
 
 				this.checkPackages();
 
-				fetchIcons([app], {}, this.$store.state.settings.assetsAge).then(icons => {
+				fetchIcons([app], {}, this.$f7.data.server, this.$store.state.settings.assetsAge).then(icons => {
 					this.appIcon = icons[app.icon] ? icons[app.icon] : null;
 				});
 
-				fetchIcons(this.appGraphicsBundle.map(graphic => ({icon: graphic})), this.appGraphics, this.$store.state.settings.assetsAge).then(appGraphics => {
+				fetchIcons(this.appGraphicsBundle.map(graphic => ({icon: graphic})), this.appGraphics, this.$f7.data.server, this.$store.state.settings.assetsAge).then(appGraphics => {
 					this.appGraphics = {
 						...this.appGraphics,
 						...appGraphics,
@@ -280,7 +280,7 @@ export default {
 				});
 
 				this.appScreenshotsBundle.forEach(screenshots => {
-					fetchIcons(screenshots.map(screenshot => ({icon: screenshot})), this.appScreenshots, this.$store.state.settings.assetsAge).then(appScreenshots => {
+					fetchIcons(screenshots.map(screenshot => ({icon: screenshot})), this.appScreenshots, this.$f7.data.server, this.$store.state.settings.assetsAge).then(appScreenshots => {
 						this.appScreenshots = {
 							...this.appScreenshots,
 							...appScreenshots,

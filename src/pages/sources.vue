@@ -219,7 +219,7 @@
 				});
 			},
 			fetchIcons: function() {
-				fetchIcons(this.sources.map(source => source.repo), this.icons, this.$store.state.settings.assetsAge).then(icons => {
+				fetchIcons(this.sources.map(source => source.repo), this.icons, this.$f7.data.server, this.$store.state.settings.assetsAge).then(icons => {
 					this.icons = {
 						...this.icons,
 						...icons,

@@ -14,7 +14,7 @@
 						<div class="timeline-item-inner">
 							<div class="timeline-item-title">{{ $t('words.download') }}</div>
 							<div class="timeline-item-text">{{ $t('popups.downloadApp.steps.download.description') }}</div>
-							<f7-button href="https://ablota.com/repo/Ablota_Store.apk" :text="$t('words.download')" fill raised></f7-button>
+							<f7-button href="https://ablota.com/repo/Ablota_Store.apk" :text="$t('words.download')" fill raised external></f7-button>
 						</div>
 					</div>
 				</div>
@@ -45,7 +45,7 @@
 						<div class="timeline-item-inner">
 							<div class="timeline-item-title">{{ $t('words.done') }}</div>
 							<div class="timeline-item-text">{{ $t('popups.downloadApp.steps.done.description') }}</div>
-							<f7-button href="https://store.ablota.com" :text="$t('words.launch')" fill raised></f7-button>
+							<f7-button href="https://store.ablota.com" :text="$t('words.launch')" fill raised external></f7-button>
 						</div>
 					</div>
 				</div>

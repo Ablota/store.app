@@ -5,7 +5,7 @@
 	<author email="info@ablota.com" href="https://ablota.com">Ablota (StarApps GmbH)</author>
 	<content src="index.html"/>
 
-	<access origin="https://store.ablota.com"/>
+	<access origin="https://api.store.ablota.com"/>
 	<allow-intent href="http://*/*"/>
 	<allow-intent href="https://*/*"/>
 	<allow-intent href="mailto:*"/>

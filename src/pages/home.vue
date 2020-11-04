@@ -112,7 +112,7 @@
 				clearTimeout(this.appsIconsTimeout);
 
 				this.appsIconsTimeout = setTimeout(() => {
-					fetchIcons(this.newUpdatedApps, this.appsIcons, this.$store.state.settings.assetsAge).then(icons => {
+					fetchIcons(this.newUpdatedApps, this.appsIcons, this.$f7.data.server, this.$store.state.settings.assetsAge).then(icons => {
 						this.appsIcons = {
 							...this.appsIcons,
 							...icons,
@@ -127,7 +127,7 @@
 						}
 					});
 
-					fetchIcons(items, this.appsIcons, this.$store.state.settings.assetsAge).then(icons => {
+					fetchIcons(items, this.appsIcons, this.$f7.data.server, this.$store.state.settings.assetsAge).then(icons => {
 						this.appsIcons = {
 							...this.appsIcons,
 							...icons,

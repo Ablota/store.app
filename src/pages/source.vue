@@ -136,7 +136,7 @@
 					});
 
 					if(source.repo.icon) {
-						fetchAsset(source.repo.icon, this.$store.state.settings.assetsAge).then(asset => {
+						fetchAsset(source.repo.icon, this.$f7.data.server, this.$store.state.settings.assetsAge).then(asset => {
 							const img = new Image();
 
 							img.src = asset.localUrl;

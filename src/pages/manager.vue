@@ -117,7 +117,7 @@ export default {
 					}
 				});
 
-				fetchIcons(items, this.icons, this.$store.state.settings.assetsAge).then(icons => {
+				fetchIcons(items, this.icons, this.$f7.data.server, this.$store.state.settings.assetsAge).then(icons => {
 					this.icons = {
 						...this.icons,
 						...icons,

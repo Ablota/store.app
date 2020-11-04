@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /static/images/
+
+Sitemap: https://store.ablota.com/sitemap.xml

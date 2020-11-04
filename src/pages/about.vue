@@ -18,22 +18,22 @@
 				<f7-block-title>{{ $t('words.socialMedia') }}</f7-block-title>
 				<f7-list>
 					<f7-list-item footer="@Ablota_com" link="https://mastodon.online/@Ablota_com" :title="$t('words.mastodon')" external target="_system">
-						<img src="static/images/logos/mastodon.svg" slot="media" class="icon-30" />
+						<img src="static/images/logos/mastodon.svg" slot="media" alt="" class="icon-30" />
 					</f7-list-item>
 					<f7-list-item footer="@Ablota_com" link="https://twitter.com/Ablota_com" :title="$t('words.twitter')" external target="_system">
-						<img src="static/images/logos/twitter.png" slot="media" class="icon-30" />
+						<img src="static/images/logos/twitter.png" slot="media" alt="" class="icon-30" />
 					</f7-list-item>
 					<f7-list-item footer="r/Ablota" link="https://reddit.com/r/Ablota" :title="$t('words.reddit')" external target="_system">
-						<img src="static/images/logos/reddit.png" slot="media" class="icon-30" />
+						<img src="static/images/logos/reddit.png" slot="media" alt="" class="icon-30" />
 					</f7-list-item>
 				</f7-list>
 				<f7-block-title>{{ $t('words.donate') }}</f7-block-title>
 				<f7-list>
 					<f7-list-item link="https://liberapay.com/Ablota_com" :title="$t('words.liberapay')" external target="_system">
-						<img src="static/images/logos/liberapay.svg" slot="media" class="icon-30" />
+						<img src="static/images/logos/liberapay.svg" slot="media" alt="" class="icon-30" />
 					</f7-list-item>
 					<f7-list-item link="https://opencollective.com/Ablota_com" :title="$t('words.openCollective')" external target="_system">
-						<img src="static/images/logos/opencollective.svg" slot="media" class="icon-30" />
+						<img src="static/images/logos/opencollective.svg" slot="media" alt="" class="icon-30" />
 					</f7-list-item>
 				</f7-list>
 				<f7-block>
