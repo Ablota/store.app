@@ -1,14 +1,5 @@
 <template>
 	<f7-page name="index" :page-content="false">
-		<f7-navbar>
-			<f7-nav-left>
-				<f7-link href="/about/" icon-aurora="f7:menu" icon-ios="f7:menu" icon-md="material:menu" />
-			</f7-nav-left>
-			<f7-nav-title>{{ title }}</f7-nav-title>
-			<f7-nav-right>
-				<f7-link icon-aurora="f7:search" icon-ios="f7:search" icon-md="material:search" href="/sources/apps/search/" />
-			</f7-nav-right>
-		</f7-navbar>
 		<f7-toolbar tabbar labels bottom>
 			<f7-link href="/" route-tab-id="home" tab-link="#home" icon-ios="f7:house_fill" icon-aurora="f7:house_fill" icon-md="material:home" :text="$t('pages.home.title')"></f7-link>
 			<f7-link href="/categories/" route-tab-id="categories" tab-link="#categories" icon-ios="f7:square_list_fill" icon-aurora="f7:square_list_fill" icon-md="material:view_list" :text="$t('pages.categories.title')"></f7-link>
@@ -16,10 +7,10 @@
 			<f7-link href="/manager/" route-tab-id="manager" tab-link="#manager" icon-ios="f7:circle_grid_3x3" icon-aurora="f7:circle_grid_3x3" icon-md="material:apps" :text="$t('pages.manager.title')" v-if="cordova"></f7-link>
 		</f7-toolbar>
 		<f7-tabs routable>
-			<f7-tab id="home" v-on:tab:show="changeTitle"></f7-tab>
-			<f7-tab id="categories" v-on:tab:show="changeTitle"></f7-tab>
-			<f7-tab id="sources" v-on:tab:show="changeTitle"></f7-tab>
-			<f7-tab id="manager" v-on:tab:show="changeTitle"></f7-tab>
+			<f7-tab id="home"></f7-tab>
+			<f7-tab id="categories"></f7-tab>
+			<f7-tab id="sources"></f7-tab>
+			<f7-tab id="manager"></f7-tab>
 		</f7-tabs>
 	</f7-page>
 </template>
@@ -29,20 +20,18 @@
 	export default {
 		data: function() {
 			return {
-				title: this.$t('app.name'),
 				cordova: Device.cordova,
 			};
-		},
-		methods: {
-			changeTitle: function(element) {
-				this.title = this.$t(`pages.${element.id}.title`);
-			},
 		},
 		mounted() {
 			this.$f7ready(() => {
 				if(Device.cordova) {
 					setTimeout(() => {
 						window.navigator.splashscreen.hide();
+
+						ablota.store.device.info(data => {
+							this.$f7.data.deviceInfo = data;
+						});
 					}, 1000);
 
 					ablota.store.link.handler(data => {

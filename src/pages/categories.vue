@@ -1,5 +1,15 @@
 <template>
 	<f7-page name="categories">
+		<f7-navbar large>
+			<f7-nav-left>
+				<f7-link href="/about/" icon-aurora="f7:menu" icon-ios="f7:menu" icon-md="material:menu" />
+			</f7-nav-left>
+			<f7-nav-title>{{ $t('pages.categories.title') }}</f7-nav-title>
+			<f7-nav-title-large>{{ $t('pages.categories.title') }}</f7-nav-title-large>
+			<f7-nav-right>
+				<f7-link icon-aurora="f7:search" icon-ios="f7:search" icon-md="material:search" href="/sources/apps/search/" />
+			</f7-nav-right>
+		</f7-navbar>
 		<f7-list>
 			<f7-list-item
 				:footer="$tc('counts.apps', 0, {

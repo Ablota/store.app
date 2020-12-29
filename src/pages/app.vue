@@ -29,18 +29,28 @@
 		<popover-anti-features/>
 		<popup-download-app/>
 		<f7-fab
-			v-show="app && packages.length"
+			v-show="app && suggestion.package && (!suggestion.installed || suggestion.outdated || suggestion.reinstall)"
 			slot="fixed"
-			:text="packageUpdate ? $t('words.update') : $t('words.install')"
+			:text="suggestion.outdated ? $t('words.update') : $t('words.install')"
 			class="fab-install no-margin-bottom"
 			morph-to=".toolbar-progress"
 			position="center-bottom"
-			@click="installPackage(packageSuggestion)"
+			@click="installPackage(suggestion.package)"
 		>
 			<f7-icon aurora="f7:plus" ios="f7:plus" md="material:add"></f7-icon>
 		</f7-fab>
-		<f7-fab v-show="app && !packages.length" slot="fixed" :text="$t('words.uninstall')" class="fab-uninstall no-margin-bottom" position="center-bottom" @click="uninstallApp">
-			<f7-icon aurora="f7:minus" ios="f7:minus" md="material:remove"></f7-icon>
+		<f7-fab
+			v-show="app && suggestion.installed && !suggestion.outdated && !suggestion.reinstall"
+			slot="fixed"
+			:text="$t('words.launch')"
+			class="fab-launch no-margin-bottom"
+			position="center-bottom"
+			@click="launchApp()"
+		>
+			<f7-icon aurora="f7:arrow_up_right_square" ios="f7:arrow_up_right_square" md="material:launch"></f7-icon>
+		</f7-fab>
+		<f7-fab v-show="app && suggestion.installed" slot="fixed" :tooltip="$t('words.uninstall')" class="fab-uninstall no-margin-bottom" position="right-bottom" @click="uninstallApp">
+			<f7-icon aurora="f7:trash" ios="f7:trash" md="material:delete"></f7-icon>
 		</f7-fab>
 		<div v-if="app">
 			<f7-popover class="popover-packages">
@@ -48,7 +58,7 @@
 					<f7-list-item
 						v-for="appPackage in packages"
 						:key="appPackage.hash"
-						:badge="appPackage.versionCode === app.suggestedVersionCode || appPackage.versionName === app.suggestedVersionName ? $t('words.suggestion') : ''"
+						:badge="suggestion.package && appPackage.hash === suggestion.package.hash ? $t('words.suggestion') : ''"
 						:footer="`${appPackage.added.toLocaleDateString()}, ${Math.round(appPackage.size / 1024 / 1024 * 10) / 10} MB`"
 						:title="`${appPackage.versionName} (${appPackage.versionCode})`"
 						link
@@ -69,25 +79,61 @@
 			</f7-popover>
 			<f7-list accordion-list class="no-margin" media-list no-hairlines>
 				<f7-list-item
-					:accordion-item="!!(app.description || app.whatsNew)" :footer="app.packageName" :subtitle="app.summary" class="no-subtitle-limit"
+					:accordion-item="!!suggestion.package"
+					:footer="app.packageName"
+					:subtitle="app.summary"
+					class="no-subtitle-limit"
 				>
 					<img v-if="appIcon" slot="media" :src="appIcon" alt="" class="icon-60"/>
 					<f7-skeleton-block v-if="app.icon && !appIcon" slot="media" class="icon-60"/>
 					<f7-link v-if="app.authorName && (app.authorEmail || app.authorWebSite)" slot="text" popover-open=".popover-author" v-html="app.authorName"/>
 					<span v-else-if="app.authorName" slot="text" v-html="app.authorName"/>
-					<f7-accordion-content>
-						<div v-if="app.description">
-							<f7-block-title>{{ $t('words.description') }}</f7-block-title>
-							<f7-block v-html="app.description"></f7-block>
+					<f7-accordion-content v-if="suggestion.package">
+						<f7-block-title class="no-margin-top">{{ $t('words.details') }}</f7-block-title>
+						<f7-block>
+							<p>{{ $t('pages.app.details') }}</p>
+						</f7-block>
+						<f7-list class="no-title-limit item-padding-half" inset>
+							<f7-list-item :title="suggestion.package.added.toLocaleDateString()" :header="$t('words.date')"></f7-list-item>
+							<f7-list-item :title="`${suggestion.package.versionName} (${suggestion.package.versionCode})`" :header="$t('words.version')"></f7-list-item>
+							<f7-list-item :title="`${Math.round(suggestion.package.size / 1024 / 1024 * 10) / 10} MB`" :header="$t('words.size')"></f7-list-item>
+							<f7-list-item v-if="suggestion.package.minSdkVersion" :title="suggestion.package.minSdkVersion" :header="$t('words.minSdkVersion')"></f7-list-item>
+							<f7-list-item v-if="suggestion.package.targetSdkVersion" :title="suggestion.package.targetSdkVersion" :header="$t('words.targetSdkVersion')"></f7-list-item>
+							<f7-list-item v-if="suggestion.package.maxSdkVersion" :title="suggestion.package.maxSdkVersion" :header="$t('words.maxSdkVersion')"></f7-list-item>
+							<f7-list-item v-if="suggestion.package.nativecode.length" :title="suggestion.package.nativecode.join(', ')" :header="$t('words.abis')"></f7-list-item>
+						</f7-list>
+						<div v-if="Object.keys(permissions).length">
+							<f7-block-title>{{ $t('words.permissions') }}</f7-block-title>
+							<f7-block>
+								<p>{{ $t('pages.app.permissions') }}</p>
+							</f7-block>
+							<f7-list class="no-title-limit item-padding-half" inset>
+								<f7-list-item v-for="(value, name) in permissions" :title="value" :header="name"></f7-list-item>
+							</f7-list>
 						</div>
-						<div v-if="app.whatsNew">
-							<f7-block-title>{{ $t('words.whatsNew') }}</f7-block-title>
-							<f7-block v-html="app.whatsNew"></f7-block>
+						<div v-if="suggestion.package.features.length">
+							<f7-block-title>{{ $t('words.features') }}</f7-block-title>
+							<f7-block>
+								<p>{{ $t('pages.app.features') }}</p>
+							</f7-block>
+							<f7-list class="no-title-limit item-padding-half" inset>
+								<f7-list-item v-for="feature in suggestion.package.features" :title="feature" :header="feature"></f7-list-item>
+							</f7-list>
 						</div>
+						<f7-block-title>{{ $t('words.hashes') }}</f7-block-title>
+						<f7-block>
+							<p>{{ $t('pages.app.hashes') }}</p>
+						</f7-block>
+						<f7-list class="no-title-limit item-padding-half" inset>
+							<f7-list-item v-if="suggestion.package.hashType === 'sha256'" :title="suggestion.package.hash.match(/.{1,2}/g).join(':').toUpperCase()" :header="`${$t('words.apk')} (${$t('words.sha256')})`"></f7-list-item>
+							<f7-list-item v-if="suggestion.package.hashType === 'sha512'" :title="suggestion.package.hash.match(/.{1,2}/g).join(':').toUpperCase()" :header="`${$t('words.apk')} (${$t('words.sha512')})`"></f7-list-item>
+							<f7-list-item v-if="suggestion.package.obbMainFileSha256" :title="suggestion.package.obbMainFileSha256.match(/.{1,2}/g).join(':').toUpperCase()" :header="`${$t('words.obbMain')} (${$t('words.sha256')})`"></f7-list-item>
+							<f7-list-item v-if="suggestion.package.obbPatchFileSha256" :title="suggestion.package.obbPatchFileSha256.match(/.{1,2}/g).join(':').toUpperCase()" :header="`${$t('words.obbPatch')} (${$t('words.sha256')})`"></f7-list-item>
+						</f7-list>
 					</f7-accordion-content>
 				</f7-list-item>
 			</f7-list>
-			<f7-block v-if="appGraphicsBundle.length">
+			<f7-block v-if="appGraphicsBundle.length" class="no-margin">
 				<f7-swiper :params="{effect: 'cube', centeredSlides: true, loop: appGraphicsBundle.length > 1, autoplay: {delay: 10000}, }">
 					<f7-swiper-slide v-for="(graphic, index) in appGraphicsBundle" :key="index">
 						<img v-if="appGraphics[graphic]" :src="appGraphics[graphic]" alt="" class="width-100" @click="graphicsPhotoBrowser.open(index)"/>
@@ -108,13 +154,30 @@
 					</f7-swiper-slide>
 				</f7-swiper>
 			</f7-block>
+			<div v-if="app.whatsNew">
+				<f7-block-title>{{ $t('words.whatsNew') }}</f7-block-title>
+				<f7-block v-html="app.whatsNew"></f7-block>
+			</div>
+			<div v-if="app.description">
+				<f7-block-title>{{ $t('words.description') }}</f7-block-title>
+				<f7-list accordion-list class="no-margin" media-list no-hairlines>
+					<f7-list-item
+						:accordion-item="app.description.length > 500" class="no-subtitle-limit accordion-text"
+					>
+						<span slot="title" class="item-subtitle" v-html="`${app.description.replace(/^(.{500}[^\s]*).*/, '$1')}${app.description.length > 500 ? '...' : ''}`"/>
+						<f7-accordion-content>
+							<f7-block class="no-margin" v-html="`...${app.description.replace(app.description.replace(/^(.{500}[^\s]*).*/, '$1'), '')}`"></f7-block>
+						</f7-accordion-content>
+					</f7-list-item>
+				</f7-list>
+			</div>
 			<div v-if="appScreenshotsBundle.length">
 				<f7-block-title>{{ $t('words.screenshots') }}</f7-block-title>
 				<f7-block>
 					<f7-swiper :params="{slidesPerView: 3.5, spaceBetween: 20}">
 						<f7-swiper-slide v-for="(screenshot, index) in appScreenshotsBundle.flat()" :key="index">
 							<img v-if="appScreenshots[screenshot]" :src="appScreenshots[screenshot]" alt="" class="width-100" @click="screenshotsPhotoBrowser.open(index)"/>
-							<f7-skeleton-block v-else height="30vh" width="100%"/>
+							<f7-skeleton-block v-else height="20vh" width="100%"/>
 						</f7-swiper-slide>
 					</f7-swiper>
 				</f7-block>
@@ -123,9 +186,9 @@
 				<f7-card>
 					<f7-card-content class="text-align-center">
 						<p>{{ $t('pages.app.donate') }}</p>
-						<a v-if="app.bitcoin" :href="`bitcoin:${app.bitcoin}?message=${app.name}`" class="chip color-orange external">
+						<a v-if="app.bitcoin" :href="`bitcoin:${app.bitcoin}?message=${app.name}`" class="chip color-orange external" @click="crypto(app.bitcoin)">
 							<div class="chip-label">{{ $t('words.bitcoin') }}</div>
-						</a> <a v-if="app.litecoin" :href="`litecoin:${app.litecoin}?message=${app.name}`" class="chip color-blue external">
+						</a> <a v-if="app.litecoin" :href="`litecoin:${app.litecoin}?message=${app.name}`" class="chip color-blue external" @click="crypto(app.litecoin)">
 						<div class="chip-label">{{ $t('words.litecoin') }}</div>
 					</a> <a v-if="app.liberapayID" :href="`https://liberapay.com/~${app.liberapayID}`" class="chip color-yellow external" target="_system">
 						<div class="chip-label">{{ $t('words.liberapay') }}</div>
@@ -193,7 +256,7 @@
 </template>
 <script>
 import {Device} from 'framework7';
-import {downloadPackage, fetchIcons, share} from '../js/utils';
+import {downloadPackage, fetchIcons, share, suggestPackage} from '../js/utils';
 import ChipAntiFeature from '../components/chips/antifeature';
 import PopoverAntiFeatures from '../components/popovers/antifeatures';
 import PopupDownloadApp from '../components/popups/downloadapp';
@@ -216,15 +279,14 @@ export default {
 			appGraphics: {},
 			appScreenshots: {},
 			packages: [],
-			packageUpdate: false,
-			packageSuggestion: null,
+			suggestion: {},
+			permissions: {},
 			progress: {
 				value: 0,
 				status: null,
 				label: null,
 			},
 			installPackageCancelled: false,
-			deviceInfo: {},
 		};
 	},
 	computed: {
@@ -248,6 +310,8 @@ export default {
 				.map(screenshots => this.app[screenshots]);
 		},
 		appPackages: function() {
+			if(this.loading) return [];
+
 			return this.$store.getters['sources/getPackages'](this.appId, this.sourceId);
 		},
 		graphicsPhotoBrowser: function() {
@@ -308,6 +372,14 @@ export default {
 
 					return;
 				}
+				if(this.suggestion.reinstall) {
+					setTimeout(() => this.$f7.fab.close('.fab-install'), 1000);
+					this.$f7.dialog.confirm(this.$t('pages.app.reinstall'), () => {
+						this.uninstallApp();
+					});
+
+					return;
+				}
 
 				this.installPackageCancelled = false;
 
@@ -362,12 +434,7 @@ export default {
 								text: this.$t('pages.app.install.success'),
 								closeButtonText: this.$t('words.launch'),
 								on: {
-									closeButtonClick: () => {
-										ablota.store.package.launch(appPackage.packageName, () => {
-										}, () => {
-											this.$f7.dialog.alert(this.$t('pages.app.launch'));
-										});
-									},
+									closeButtonClick: () => this.launchApp(),
 								},
 							});
 							this.$f7.fab.close('.fab-install');
@@ -379,7 +446,7 @@ export default {
 						}
 
 						this.checkPackages();
-					}, () => {
+					}, data => {
 						this.$f7.dialog.alert(this.$t(data));
 						this.$f7.fab.close('.fab-install');
 					});
@@ -397,40 +464,48 @@ export default {
 
 			setTimeout(() => this.$f7.fab.close('.fab-install'), 1000);
 		},
+		launchApp: function() {
+			if(!Device.cordova) return;
+
+			ablota.store.package.launch(this.app.packageName, () => {
+			}, () => {
+				this.$f7.dialog.alert(this.$t('pages.app.launch'));
+			});
+		},
 		uninstallApp: function() {
 			if(!Device.cordova) return;
 
 			ablota.store.package.uninstall(this.app.packageName, () => this.checkPackages());
 		},
 		checkPackages: function(appPackages = this.appPackages) {
-			if(Device.cordova && this.app && this.deviceInfo.status === 'success') {
-				ablota.store.package.info(this.app.packageName, data => {
-					this.packages = appPackages.filter(appPackage => {
-						if(appPackage.minSdkVersion && this.deviceInfo.sdk < appPackage.minSdkVersion) {
-							return false;
-						} else if(appPackage.maxSdkVersion && this.deviceInfo.sdk > appPackage.maxSdkVersion) {
-							return false;
-						} else if(appPackage.nativecode.length && !this.deviceInfo.abis.some(abi => appPackage.nativecode.includes(abi))) {
-							return false;
-						} else if(data.status === 'success' && !data.package.signatures.includes(appPackage.signer)) {
-							return false;
-						} else if(data.status === 'success' && data.package.versionCode >= appPackage.versionCode) {
-							return false;
-						}
+			if(Device.cordova && this.app) {
+				suggestPackage(this.app, appPackages, this.$f7.data.deviceInfo).then(data => {
+					this.suggestion = data;
+					this.packages = data.packages;
 
-						return true;
-					});
+					if(this.suggestion.package) {
+						ablota.store.package.permissionsInfo(this.suggestion.package['uses-permission'].map(permission => permission[0]), data => {
+							if(data.status === 'success') {
+								for(const key in data.permissions) {
+									if(data.permissions.hasOwnProperty(key) && data.permissions[key] === null) {
+										delete data.permissions[key];
+									}
+								}
 
-					this.packageSuggestion = this.packages.find(appPackage => appPackage.versionCode === this.app.suggestedVersionCode || appPackage.versionName === this.app.suggestedVersionName);
-
-					if(data.status === 'success') {
-						this.packageUpdate = !!this.packages.length;
-					} else if(this.packages.length && !this.packageSuggestion) {
-						this.packageSuggestion = this.packages[0];
+								this.permissions = data.permissions;
+							}
+						});
 					}
+				}).catch(data => {
+					this.$f7.dialog.alert(this.$t(data));
+					this.$f7router.back();
 				});
 			} else {
 				this.packages = appPackages;
+				this.suggestion = {
+					package: this.packages[0],
+					installed: false,
+				}
 			}
 		},
 		share: function() {
@@ -455,17 +530,32 @@ export default {
 				text: this.$t(data),
 			}));
 		},
+		crypto: function(address) {
+			this.$f7.dialog.create({
+				title: this.$t('app.name'),
+				text: this.$t('pages.app.crypto.text'),
+				buttons: [
+					{
+						text: this.$t('words.close'),
+					},
+					{
+						text: this.$t('words.copy'),
+						bold: true,
+						onClick: () => {
+							navigator.clipboard.writeText(address);
+
+							this.$f7.toast.show({
+								text: this.$t('pages.app.crypto.clipboard'),
+							});
+						},
+					},
+				],
+				destroyOnClose: true,
+			}).open();
+		},
 	},
 	mounted: function() {
 		this.$f7ready(() => {
-			if(Device.cordova) {
-				ablota.store.device.info(data => {
-					this.deviceInfo = data;
-
-					this.checkPackages();
-				});
-			}
-
 			this.$$('.fab-install').on('taphold', () => {
 				this.$f7.popover.open('.popover-packages', '.fab-install', true);
 			});

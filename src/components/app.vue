@@ -18,7 +18,7 @@
 				f7params: {
 					id: 'com.ablota.store',
 					name: 'Ablota Store',
-                    version: '1.0.0',
+                    version: '1.0.1',
 					theme: 'auto',
 					data: function() {
 						return {
@@ -26,6 +26,7 @@
 							server: {
 								url: 'https://api.store.ablota.com/'
 							},
+							deviceInfo: null,
 						};
 					},
                     autoDarkTheme: true,

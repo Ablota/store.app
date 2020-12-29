@@ -1,5 +1,15 @@
 <template>
 	<f7-page name="sources" ptr @ptr:refresh="reload">
+		<f7-navbar large>
+			<f7-nav-left>
+				<f7-link href="/about/" icon-aurora="f7:menu" icon-ios="f7:menu" icon-md="material:menu" />
+			</f7-nav-left>
+			<f7-nav-title>{{ $t('pages.sources.title') }}</f7-nav-title>
+			<f7-nav-title-large>{{ $t('pages.sources.title') }}</f7-nav-title-large>
+			<f7-nav-right>
+				<f7-link icon-aurora="f7:search" icon-ios="f7:search" icon-md="material:search" href="/sources/apps/search/" />
+			</f7-nav-right>
+		</f7-navbar>
 		<f7-fab slot="fixed" @click="openAdd">
 			<f7-icon aurora="f7:plus" ios="f7:plus" md="material:add"></f7-icon>
 		</f7-fab>
@@ -18,7 +28,7 @@
 				<f7-list no-hairlines-md>
 					<f7-list-input
 						:label="$t('words.address')"
-						type="url"
+						type="text"
 						:placeholder="$f7.data.url"
 						:value="add.address"
 						@input="add.address = $event.target.value"
@@ -61,6 +71,12 @@
 						:title="$t('pages.sources.add.suggestions.bitwarden.title')"
 						link
 						@click="add.address = 'https://mobileapp.bitwarden.com/fdroid/repo/'; add.fingerprint = 'BC54EA6FD1CD5175BCCCC47C561C5726E1C3ED7E686B6DB4B18BAC843A3EFE6C'; submitAdd();"
+					/>
+					<f7-list-item
+						:footer="$t('pages.sources.add.suggestions.newPipe.description')"
+						:title="$t('pages.sources.add.suggestions.newPipe.title')"
+						link
+						@click="add.address = 'https://archive.newpipe.net/fdroid/repo/'; add.fingerprint = 'E2402C78F9B97C6C89E97DB914A2751FDA1D02FE2039CC0897A462BDB57E7501'; submitAdd();"
 					/>
 				</f7-list>
 			</f7-page>
@@ -180,25 +196,35 @@
 				return new Promise((resolve, reject) => {
 					Joi.object({
 						address: Joi.string().trim().uri({
-							scheme: ['http', 'https'],
+							relativeOnly: true,
 						}).required(),
-						fingerprint: Joi.string().trim().failover(null).optional(),
 					}).required().validateAsync({
 						address,
-						fingerprint,
 					}).then(source => {
-						const addressUrl = new URL(source.address);
-						const addressQuery = this.$utils.parseUrlQuery(source.address);
+						address = 'https://' + source.address;
+					}).catch(() => {}).finally(() => {
+						Joi.object({
+							address: Joi.string().trim().uri({
+								scheme: ['http', 'https'],
+							}).required(),
+							fingerprint: Joi.string().trim().failover(null).optional(),
+						}).required().validateAsync({
+							address,
+							fingerprint,
+						}).then(source => {
+							const addressUrl = new URL(source.address);
+							const addressQuery = this.$utils.parseUrlQuery(source.address);
 
-						source.address = 'https://' + addressUrl.host + addressUrl.pathname;
+							source.address = 'https://' + addressUrl.host + addressUrl.pathname;
 
-						if(addressQuery.fingerprint && !source.fingerprint) {
-							source.fingerprint = addressQuery.fingerprint;
-						}
+							if(addressQuery.fingerprint && !source.fingerprint) {
+								source.fingerprint = addressQuery.fingerprint;
+							}
 
-						resolve(source);
-					}).catch(() => {
-						reject();
+							resolve(source);
+						}).catch(() => {
+							reject();
+						});
 					});
 				});
 			},

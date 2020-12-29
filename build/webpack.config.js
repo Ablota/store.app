@@ -43,7 +43,7 @@ module.exports = {
 	devtool: env === 'production' ? 'source-map' : 'eval',
 	devServer: {
 		hot: false, //Changed
-		open: true,
+		open: false,
 		compress: true,
 		contentBase: '/www/',
 		disableHostCheck: true,

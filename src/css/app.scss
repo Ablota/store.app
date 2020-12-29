@@ -26,6 +26,13 @@ body {
 	}
 }
 
+.item-padding-half {
+	.item-inner {
+		padding-top: calc(var(--f7-list-item-padding-vertical) / 2);
+		padding-bottom: calc(var(--f7-list-item-padding-vertical) / 2);
+	}
+}
+
 .overlay-center {
 	position: absolute !important;
 	top: 50%;
@@ -66,6 +73,15 @@ body {
 
 	img {
 		margin: 5px;
+	}
+}
+
+.accordion-text {
+	.item-inner {
+		padding: 0;
+	}
+	.item-subtitle p {
+		margin-top: 0;
 	}
 }
 

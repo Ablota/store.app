@@ -261,7 +261,7 @@ export function localizeApp(app, language) {
 			allowedSchemes: ['http', 'https', 'mailto'],
 			allowProtocolRelative: false,
 			transformTags: {
-				'a': sanitizeHtml.simpleTransform('a', {
+				a: sanitizeHtml.simpleTransform('a', {
 					class: 'link external',
 					target: '_system',
 				}),
@@ -451,6 +451,75 @@ export function share({title, text, url}) {
 
 				resolve('utils.share.console');
 			});
+		}
+	});
+}
+
+export function suggestPackage(app, packages, deviceInfo) {
+	return new Promise((resolve, reject) => {
+		if(deviceInfo && deviceInfo.status === 'success') {
+			ablota.store.package.info(app.packageName, packageInfo => {
+				const allPackages = packages.filter(appPackage => {
+					if(appPackage.minSdkVersion && deviceInfo.sdk < appPackage.minSdkVersion) {
+						return false;
+					} else if(appPackage.maxSdkVersion && deviceInfo.sdk > appPackage.maxSdkVersion) {
+						return false;
+					} else if(appPackage.nativecode.length && !deviceInfo.abis.some(abi => appPackage.nativecode.includes(abi))) {
+						return false;
+					}
+
+					return true;
+				}).sort((a, b) => a.versionCode < b.versionCode);
+				const compatiblePackages = allPackages.filter(appPackage => {
+					if(packageInfo.status === 'success') {
+						if(appPackage.signer && !packageInfo.package.signatures.includes(appPackage.signer)) {
+							return false;
+						} else if(packageInfo.package.versionCode > appPackage.versionCode) {
+							return false;
+						}
+					}
+
+					return true;
+				});
+
+				if(allPackages.length) {
+					let suggestion = compatiblePackages.find(appPackage => appPackage.versionCode === app.suggestedVersionCode);
+					if(!suggestion) {
+						suggestion = compatiblePackages.find(appPackage => appPackage.versionName === app.suggestedVersionName);
+					}
+					if(!suggestion && allPackages.length > compatiblePackages.length) {
+						suggestion = allPackages.find(appPackage => appPackage.versionCode === app.suggestedVersionCode);
+						if(!suggestion) {
+							suggestion = allPackages.find(appPackage => appPackage.versionName === app.suggestedVersionName);
+						}
+					}
+					if(!suggestion) {
+						if(allPackages[0].versionName === compatiblePackages[0].versionName) {
+							suggestion = compatiblePackages[0];
+						} else {
+							suggestion = allPackages[0];
+						}
+					}
+
+					resolve({
+						package: suggestion,
+						packages: compatiblePackages,
+						installed: packageInfo.status === 'success',
+						outdated: packageInfo.status === 'success' && suggestion.versionCode > packageInfo.package.versionCode,
+						reinstall: packageInfo.status === 'success' && suggestion.signer && !packageInfo.package.signatures.includes(suggestion.signer),
+					});
+				} else {
+					resolve({
+						package: null,
+						packages: [],
+						installed: packageInfo.status === 'success',
+						outdated: false,
+						reinstall: false,
+					});
+				}
+			}, () => reject('utils.suggestPackage.packageInfo'));
+		} else {
+			reject('utils.suggestPackage.deviceInfo');
 		}
 	});
 }

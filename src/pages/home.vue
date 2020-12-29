@@ -1,5 +1,15 @@
 <template>
 	<f7-page name="home">
+		<f7-navbar large>
+			<f7-nav-left>
+				<f7-link href="/about/" icon-aurora="f7:menu" icon-ios="f7:menu" icon-md="material:menu" />
+			</f7-nav-left>
+			<f7-nav-title>{{ $t('app.name') }}</f7-nav-title>
+			<f7-nav-title-large>{{ $t('app.name') }}</f7-nav-title-large>
+			<f7-nav-right>
+				<f7-link icon-aurora="f7:search" icon-ios="f7:search" icon-md="material:search" href="/sources/apps/search/" />
+			</f7-nav-right>
+		</f7-navbar>
 		<div v-if="loading || apps.length">
 			<f7-block-title>{{ $t('pages.home.newUpdated') }}</f7-block-title>
 			<f7-swiper :params="{slidesPerView: 'auto', pagination: {clickable: true}}" pagination>

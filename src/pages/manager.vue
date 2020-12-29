@@ -1,5 +1,15 @@
 <template>
 	<f7-page name="manager">
+		<f7-navbar large>
+			<f7-nav-left>
+				<f7-link href="/about/" icon-aurora="f7:menu" icon-ios="f7:menu" icon-md="material:menu" />
+			</f7-nav-left>
+			<f7-nav-title>{{ $t('pages.manager.title') }}</f7-nav-title>
+			<f7-nav-title-large>{{ $t('pages.manager.title') }}</f7-nav-title-large>
+			<f7-nav-right>
+				<f7-link icon-aurora="f7:search" icon-ios="f7:search" icon-md="material:search" href="/sources/apps/search/" />
+			</f7-nav-right>
+		</f7-navbar>
 		<popover-anti-features />
 		<div v-show="!loading && apps.length">
 			<div v-show="apps.filter(app => app.packageUpdate).length">
@@ -9,9 +19,9 @@
 						<f7-list-item
 							v-for="(app, index) in apps.filter(app => app.packageUpdate)"
 							:key="app.packageName"
-							:badge="app.packageUpdate.versionName"
+							:badge="app.packageSuggestion.versionName"
 							:data-icon="app.icon"
-							:footer="`${app.packageUpdate.added.toLocaleDateString()}, ${Math.round(app.packageUpdate.size / 1024 / 1024 * 10) / 10} MB`"
+							:footer="`${app.packageSuggestion.added.toLocaleDateString()}, ${Math.round(app.packageSuggestion.size / 1024 / 1024 * 10) / 10} MB`"
 							:title="app.name"
 							accordion-item
 							badge-color="blue"
@@ -80,7 +90,7 @@
 	</f7-page>
 </template>
 <script>
-import {fetchIcons} from '../js/utils';
+import {fetchIcons, suggestPackage} from '../js/utils';
 import ChipAntiFeature from '../components/chips/antifeature';
 import PopoverAntiFeatures from '../components/popovers/antifeatures.vue';
 
@@ -130,7 +140,7 @@ export default {
 				if(data.status === 'success') {
 					const apps = [];
 
-					data.packages.forEach(installedPackage => {
+					const promises = data.packages.map(installedPackage => new Promise(resolve => {
 						const packages = this.$store.getters['sources/getPackages'](installedPackage.packageName);
 						let appPackage = null;
 
@@ -144,45 +154,44 @@ export default {
 
 						if(appPackage) {
 							const app = this.$store.getters['sources/getApp'](appPackage.sourceId, appPackage.packageName, this.$f7.language);
-							let appPackageUpdate = null;
-							let packageDifferences = null;
 
-							if(app.suggestedVersionCode) {
-								if(app.suggestedVersionCode > installedPackage.versionCode) {
-									appPackageUpdate = packages.find(appPackage => appPackage.sourceId === app.sourceId && installedPackage.signatures.includes(appPackage.signer) && appPackage.versionCode === app.suggestedVersionCode);
+							suggestPackage(app, packages, this.$f7.data.deviceInfo).then(data => {
+								let packageDifferences = null;
+
+								if(data.package) {
+									packageDifferences = {
+										antiFeatures: data.package.antiFeatures.filter(antiFeature => !appPackage.antiFeatures.includes(antiFeature)),
+									};
 								}
-							} else if(app.suggestedVersionName) {
-								if(app.suggestedVersionName !== installedPackage.versionName) {
-									appPackageUpdate = packages.find(appPackage => appPackage.sourceId === app.sourceId && installedPackage.signatures.includes(appPackage.signer) && appPackage.versionName === app.suggestedVersionName && appPackage.versionCode > installedPackage.versionCode);
-								}
-							}
 
-							if(appPackageUpdate) {
-								packageDifferences = {
-									antiFeatures: appPackageUpdate.antiFeatures.filter(antiFeature => !appPackage.antiFeatures.includes(antiFeature)),
-								};
-							}
+								apps.push({
+									...app,
+									package: appPackage,
+									packageSuggestion: data.package,
+									packageUpdate: data.outdated,
+									packageInstalled: installedPackage,
+									packageDifferences,
+								});
 
-							apps.push({
-								...app,
-								package: appPackage,
-								packageUpdate: appPackageUpdate,
-								packageInstalled: installedPackage,
-								packageDifferences,
+								resolve();
+							}).catch(data => this.$f7.dialog.alert(this.$t(data)));
+						} else {
+							resolve();
+						}
+					}));
+
+					Promise.all(promises).then(() => {
+						if(!this.apps.some(app => app.packageName === this.$f7.id && app.packageUpdate) && apps.some(app => app.packageName === this.$f7.id && app.packageUpdate)) {
+							const app = apps.find(app => app.packageName === this.$f7.id && app.packageUpdate);
+
+							this.$f7.dialog.alert(this.$t('pages.manager.updateSystem'), () => {
+								this.$f7router.navigate(`/sources/${encodeURIComponent(app.sourceId)}/apps/${app.packageName}/`);
 							});
 						}
+
+						this.apps = apps.sort((a, b) => a.lastUpdated < b.lastUpdated);
+						this.fetchIcons();
 					});
-
-					if(!this.apps.some(app => app.packageName === this.$f7.id && app.packageUpdate) && apps.some(app => app.packageName === this.$f7.id && app.packageUpdate)) {
-						const app = apps.find(app => app.packageName === this.$f7.id && app.packageUpdate);
-
-						this.$f7.dialog.alert(this.$t('pages.manager.updateSystem'), () => {
-							this.$f7router.navigate(`/sources/${encodeURIComponent(app.sourceId)}/apps/${app.packageName}/`);
-						});
-					}
-
-					this.apps = apps;
-					this.fetchIcons();
 				} else {
 					this.$f7.dialog.alert(this.$t('pages.manager.errors.list'));
 				}

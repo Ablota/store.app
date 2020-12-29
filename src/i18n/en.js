@@ -83,6 +83,10 @@ export default {
 						title: 'Bitwarden',
 						description: 'Bitwarden, the open source password manager, makes it easy to generate and store unique passwords for any browser or device.',
 					},
+					newPipe: {
+						title: 'NewPipe',
+						description: 'A libre lightweight streaming frontend for Android.',
+					},
 				},
 				errors: {
 					validation: 'The ',
@@ -106,15 +110,24 @@ export default {
 			},
 		},
 		app: {
+			details: 'Metadata about the package suggested by the source.',
+			permissions: 'The app can use or request the following permissions.',
+			features: 'The app can use the following hardware and software features.',
+			hashes: 'The hashes are used to verify the app to detect malicious changes.',
 			donate: 'Express your appreciation for the development and work related to this app by contributing a monthly or one-time donation.',
 			install: {
 				success: 'The app has been successfully installed and can now be used.',
 				failure: 'The installation of the app has failed.',
 			},
+			reinstall: 'In order to install the suggested update the old version must first be uninstalled. This only happens if the update has not been published by the same developer. Please only do this if you trust the source.',
 			launch: 'An error occurred while launching the app.',
 			share: {
 				title: '@:app.name: {app}',
 				text: '{summary}\n\nGet the app "{app}" now with @:(app.name).',
+			},
+			crypto: {
+				text: 'It is possible that no application has opened for the donation. If this is the case, you can copy the address here and make the donation with your crypto wallet.',
+				clipboard: 'The address for donating was copied to the clipboard.',
 			},
 		},
 		source: {
@@ -178,6 +191,10 @@ export default {
 			clipboard: 'The text for sharing was copied to the clipboard.',
 			console: 'The text for sharing could not be copied to the clipboard. It was now printed in the console.',
 		},
+		suggestPackage: {
+			deviceInfo: 'An error occurred while getting information about the device.',
+			packageInfo: 'An error occurred while getting information about the package.',
+		},
 	},
 	words: {
 		more: 'More',
@@ -188,11 +205,13 @@ export default {
 		address: 'Address',
 		mirrors: 'Mirrors',
 		sha256: 'SHA-256',
+		sha512: 'SHA-512',
 		ok: 'OK',
 		cancel: 'Cancel',
 		add: 'Add',
 		remove: 'Remove',
 		description: 'Description',
+		version: 'Version',
 		versions: 'Versions',
 		screenshots: 'Screenshots',
 		whatsNew: 'What\'s New',
@@ -237,6 +256,20 @@ export default {
 		update: 'Update',
 		step: 'Step',
 		done: 'Done',
+		hashes: 'Hashes',
+		details: 'Details',
+		date: 'Date',
+		minSdkVersion: 'Minimum SDK Version',
+		targetSdkVersion: 'Target SDK Version',
+		maxSdkVersion: 'Maximum SDK Version',
+		abis: 'ABIs',
+		size: 'Size',
+		apk: 'APK',
+		obbMain: 'OBB-Main',
+		obbPatch: 'OBB-Patch',
+		permissions: 'Permissions',
+		features: 'Features',
+		copy: 'Copy',
 	},
 	counts: {
 		apps: '1 App | {count} Apps',
@@ -286,6 +319,10 @@ export default {
 			NoSourceSince: {
 				title: 'No Source Since',
 				description: 'The upstream source for this app is no longer available. Either the app went proprietary, the source repository was dropped, or it has moved to a location currently not known to us. This means there will not be further updates unless the source reappears.',
+			},
+			ApplicationDebuggable: {
+				title: 'Application Debuggable',
+				description: 'This Anti-Feature is applied to apps that are debuggable.',
 			},
 		},
 	},
