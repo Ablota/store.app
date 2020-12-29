@@ -3,43 +3,45 @@
 	<head>
 		<meta charset="utf-8">
 		<% if (process.env.NODE_ENV === 'production') { %>
-		<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content: https://api.store.ablota.com">
+		<meta content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content: https://api.store.ablota.com" http-equiv="Content-Security-Policy">
 		<% } %>
-		<meta http-equiv="x-ua-compatible" content="ie=edge">
-		<meta property="og:image:width" content="128">
-		<meta property="og:image:height" content="128">
-		<meta property="og:description" content="The universal, decentralized and open source app store.">
-		<meta property="og:title" content="Ablota Store">
-		<meta property="og:url" content="https://store.ablota.com">
-		<meta property="og:image" content="https://store.ablota.com/static/icons/favicon.png">
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
-		<meta name="robots" content="noarchive, notranslate, noimageindex">
-		<meta name="theme-color" content="#007aff">
-		<meta name="format-detection" content="telephone=no">
-		<meta name="format-detection" content="date=no">
-		<meta name="format-detection" content="address=no">
-		<meta name="msapplication-TileColor" content="#007aff">
-		<meta name="msapplication-tap-highlight" content="no">
-		<meta name="author" content="Ablota (StarApps GmbH)">
-		<meta name="description" content="The universal, decentralized and open source app store.">
-		<meta name="keywords" content="ablota store, ablota, store, app, apps, game, game, app store, universal, open source, decentralized, foss, floss, android, ios, web, electron, desktop, starapps, starapps ltd, starapps gmbh">
+		<meta content="ie=edge" http-equiv="x-ua-compatible">
+		<meta content="128" property="og:image:width">
+		<meta content="128" property="og:image:height">
+		<meta content="The universal, decentralized and open source app store." property="og:description">
+		<meta content="Ablota Store" property="og:title">
+		<meta content="https://store.ablota.com" property="og:url">
+		<meta content="https://store.ablota.com/static/icons/favicon.png" property="og:image">
+		<meta content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover" name="viewport">
+		<meta content="noarchive, notranslate, noimageindex" name="robots">
+		<meta content="#007aff" name="theme-color">
+		<meta content="telephone=no" name="format-detection">
+		<meta content="date=no" name="format-detection">
+		<meta content="address=no" name="format-detection">
+		<meta content="#007aff" name="msapplication-TileColor">
+		<meta content="no" name="msapplication-tap-highlight">
+		<meta content="Ablota (StarApps GmbH)" name="author">
+		<meta content="The universal, decentralized and open source app store." name="description">
+		<meta
+			content="ablota store, ablota, store, app, apps, game, game, app store, universal, open source, decentralized, foss, floss, android, ios, web, electron, desktop, starapps, starapps ltd, starapps gmbh"
+			name="keywords"
+		>
 
 		<title>Ablota Store</title>
 
 		<% if (process.env.TARGET === 'web') { %>
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+		<meta content="yes" name="apple-mobile-web-app-capable">
+		<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
 
 		<% for (var index in htmlWebpackPlugin.files.css) { %>
-		<link rel="preload" href="<%= htmlWebpackPlugin.files.css[index] %>" as="style">
-		<% } %>
-		<% for (var index in htmlWebpackPlugin.files.js) { %>
-		<link rel="preload" href="<%= htmlWebpackPlugin.files.js[index] %>" as="script">
+		<link as="style" href="<%= htmlWebpackPlugin.files.css[index] %>" rel="preload">
+		<% } %> <% for (var index in htmlWebpackPlugin.files.js) { %>
+		<link as="script" href="<%= htmlWebpackPlugin.files.js[index] %>" rel="preload">
 		<% } %>
 
-		<link rel="apple-touch-icon" sizes="256x256" href="/static/icons/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="128x128" href="/static/icons/favicon.png">
-		<link rel="manifest" href="/manifest.json">
+		<link href="/static/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="256x256">
+		<link href="/static/icons/favicon.png" rel="icon" sizes="128x128" type="image/png">
+		<link href="/manifest.json" rel="manifest">
 		<% } %>
 	</head>
 	<body>

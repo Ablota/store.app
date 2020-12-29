@@ -2,15 +2,15 @@
 	<f7-page name="manager">
 		<f7-navbar large>
 			<f7-nav-left>
-				<f7-link href="/about/" icon-aurora="f7:menu" icon-ios="f7:menu" icon-md="material:menu" />
+				<f7-link href="/about/" icon-aurora="f7:menu" icon-ios="f7:menu" icon-md="material:menu"/>
 			</f7-nav-left>
 			<f7-nav-title>{{ $t('pages.manager.title') }}</f7-nav-title>
 			<f7-nav-title-large>{{ $t('pages.manager.title') }}</f7-nav-title-large>
 			<f7-nav-right>
-				<f7-link icon-aurora="f7:search" icon-ios="f7:search" icon-md="material:search" href="/sources/apps/search/" />
+				<f7-link href="/sources/apps/search/" icon-aurora="f7:search" icon-ios="f7:search" icon-md="material:search"/>
 			</f7-nav-right>
 		</f7-navbar>
-		<popover-anti-features />
+		<popover-anti-features/>
 		<div v-show="!loading && apps.length">
 			<div v-show="apps.filter(app => app.packageUpdate).length">
 				<f7-block-title>{{ $t('pages.manager.updateAvailable') }} <!--<f7-link class="float-right" :text="$t('pages.manager.updateAll')" @click="() => {}" />--></f7-block-title>
@@ -37,12 +37,17 @@
 									<div v-if="app.packageDifferences.antiFeatures.length">
 										<f7-block-title>{{ $t('words.antiFeatures') }} ({{ $t('words.differences') }})</f7-block-title>
 										<f7-block>
-											<chip-anti-feature class="padding-horizontal-half" :name="antiFeature" :key="antiFeature" v-for="antiFeature in app.packageDifferences.antiFeatures || app.antiFeatures" />
+											<chip-anti-feature
+												v-for="antiFeature in app.packageDifferences.antiFeatures || app.antiFeatures"
+												:key="antiFeature"
+												:name="antiFeature"
+												class="padding-horizontal-half"
+											/>
 										</f7-block>
 									</div>
 								</div>
 								<f7-block>
-									<f7-button :text="$t('words.update')" fill raised :href="`/sources/${encodeURIComponent(app.sourceId)}/apps/${app.packageName}/`"></f7-button>
+									<f7-button :href="`/sources/${encodeURIComponent(app.sourceId)}/apps/${app.packageName}/`" :text="$t('words.update')" fill raised></f7-button>
 								</f7-block>
 							</f7-accordion-content>
 						</f7-list-item>
@@ -60,14 +65,14 @@
 						:data-icon="app.icon"
 						:footer="app.packageName"
 						:link="`/sources/${encodeURIComponent(app.sourceId)}/apps/${app.packageName}/`"
-						:title="app.name"
 						:swipeout="!app.packageInstalled.applicationSystem"
+						:title="app.name"
 					>
 						<img v-if="icons[app.icon]" slot="media" :src="icons[app.icon]" alt="" class="icon-40"/>
 						<f7-skeleton-block v-if="app.icon && !icons[app.icon]" slot="media" class="icon-40"></f7-skeleton-block>
 						<f7-swipeout-actions right>
-							<f7-swipeout-button @click="() => submitLaunch(app)" color="blue">{{ $t('words.launch') }}</f7-swipeout-button>
-							<f7-swipeout-button @click="() => submitUninstall(app)" color="red">{{ $t('words.uninstall') }}</f7-swipeout-button>
+							<f7-swipeout-button color="blue" @click="() => submitLaunch(app)">{{ $t('words.launch') }}</f7-swipeout-button>
+							<f7-swipeout-button color="red" @click="() => submitUninstall(app)">{{ $t('words.uninstall') }}</f7-swipeout-button>
 						</f7-swipeout-actions>
 					</f7-list-item>
 				</ul>
@@ -200,7 +205,8 @@ export default {
 			});
 		},
 		submitLaunch: function(app) {
-			ablota.store.package.launch(app.packageName, () => {}, () => {
+			ablota.store.package.launch(app.packageName, () => {
+			}, () => {
 				this.$f7.dialog.alert(this.$t('pages.manager.errors.launch'));
 			});
 		},

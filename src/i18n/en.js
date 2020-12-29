@@ -343,7 +343,7 @@ export default {
 				},
 				done: {
 					description: '@:app.name is ready! You can now launch @:app.name and start downloading apps.',
-				}
+				},
 			},
 		},
 	},

@@ -2,8 +2,9 @@ $icon-sizes: 20, 30, 40, 50, 60;
 
 /* iOS Cordova Tweak */
 .device-cordova.device-ios {
-  height: 100vh;
+	height: 100vh;
 }
+
 /* Your app custom styles here */
 
 body {
@@ -80,6 +81,7 @@ body {
 	.item-inner {
 		padding: 0;
 	}
+
 	.item-subtitle p {
 		margin-top: 0;
 	}

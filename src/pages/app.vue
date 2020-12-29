@@ -49,7 +49,14 @@
 		>
 			<f7-icon aurora="f7:arrow_up_right_square" ios="f7:arrow_up_right_square" md="material:launch"></f7-icon>
 		</f7-fab>
-		<f7-fab v-show="app && suggestion.installed" slot="fixed" :tooltip="$t('words.uninstall')" class="fab-uninstall no-margin-bottom" position="right-bottom" @click="uninstallApp">
+		<f7-fab
+			v-show="app && suggestion.installed"
+			slot="fixed"
+			:tooltip="$t('words.uninstall')"
+			class="fab-uninstall no-margin-bottom"
+			position="right-bottom"
+			@click="uninstallApp"
+		>
 			<f7-icon aurora="f7:trash" ios="f7:trash" md="material:delete"></f7-icon>
 		</f7-fab>
 		<div v-if="app">
@@ -79,10 +86,7 @@
 			</f7-popover>
 			<f7-list accordion-list class="no-margin" media-list no-hairlines>
 				<f7-list-item
-					:accordion-item="!!suggestion.package"
-					:footer="app.packageName"
-					:subtitle="app.summary"
-					class="no-subtitle-limit"
+					:accordion-item="!!suggestion.package" :footer="app.packageName" :subtitle="app.summary" class="no-subtitle-limit"
 				>
 					<img v-if="appIcon" slot="media" :src="appIcon" alt="" class="icon-60"/>
 					<f7-skeleton-block v-if="app.icon && !appIcon" slot="media" class="icon-60"/>
@@ -94,13 +98,17 @@
 							<p>{{ $t('pages.app.details') }}</p>
 						</f7-block>
 						<f7-list class="no-title-limit item-padding-half" inset>
-							<f7-list-item :title="suggestion.package.added.toLocaleDateString()" :header="$t('words.date')"></f7-list-item>
-							<f7-list-item :title="`${suggestion.package.versionName} (${suggestion.package.versionCode})`" :header="$t('words.version')"></f7-list-item>
-							<f7-list-item :title="`${Math.round(suggestion.package.size / 1024 / 1024 * 10) / 10} MB`" :header="$t('words.size')"></f7-list-item>
-							<f7-list-item v-if="suggestion.package.minSdkVersion" :title="suggestion.package.minSdkVersion" :header="$t('words.minSdkVersion')"></f7-list-item>
-							<f7-list-item v-if="suggestion.package.targetSdkVersion" :title="suggestion.package.targetSdkVersion" :header="$t('words.targetSdkVersion')"></f7-list-item>
-							<f7-list-item v-if="suggestion.package.maxSdkVersion" :title="suggestion.package.maxSdkVersion" :header="$t('words.maxSdkVersion')"></f7-list-item>
-							<f7-list-item v-if="suggestion.package.nativecode.length" :title="suggestion.package.nativecode.join(', ')" :header="$t('words.abis')"></f7-list-item>
+							<f7-list-item :header="$t('words.date')" :title="suggestion.package.added.toLocaleDateString()"></f7-list-item>
+							<f7-list-item :header="$t('words.version')" :title="`${suggestion.package.versionName} (${suggestion.package.versionCode})`"></f7-list-item>
+							<f7-list-item :header="$t('words.size')" :title="`${Math.round(suggestion.package.size / 1024 / 1024 * 10) / 10} MB`"></f7-list-item>
+							<f7-list-item v-if="suggestion.package.minSdkVersion" :header="$t('words.minSdkVersion')" :title="suggestion.package.minSdkVersion"></f7-list-item>
+							<f7-list-item
+								v-if="suggestion.package.targetSdkVersion"
+								:header="$t('words.targetSdkVersion')"
+								:title="suggestion.package.targetSdkVersion"
+							></f7-list-item>
+							<f7-list-item v-if="suggestion.package.maxSdkVersion" :header="$t('words.maxSdkVersion')" :title="suggestion.package.maxSdkVersion"></f7-list-item>
+							<f7-list-item v-if="suggestion.package.nativecode.length" :header="$t('words.abis')" :title="suggestion.package.nativecode.join(', ')"></f7-list-item>
 						</f7-list>
 						<div v-if="Object.keys(permissions).length">
 							<f7-block-title>{{ $t('words.permissions') }}</f7-block-title>
@@ -108,7 +116,7 @@
 								<p>{{ $t('pages.app.permissions') }}</p>
 							</f7-block>
 							<f7-list class="no-title-limit item-padding-half" inset>
-								<f7-list-item v-for="(value, name) in permissions" :title="value" :header="name"></f7-list-item>
+								<f7-list-item v-for="(value, name) in permissions" :header="name" :title="value"></f7-list-item>
 							</f7-list>
 						</div>
 						<div v-if="suggestion.package.features.length">
@@ -117,7 +125,7 @@
 								<p>{{ $t('pages.app.features') }}</p>
 							</f7-block>
 							<f7-list class="no-title-limit item-padding-half" inset>
-								<f7-list-item v-for="feature in suggestion.package.features" :title="feature" :header="feature"></f7-list-item>
+								<f7-list-item v-for="feature in suggestion.package.features" :header="feature" :title="feature"></f7-list-item>
 							</f7-list>
 						</div>
 						<f7-block-title>{{ $t('words.hashes') }}</f7-block-title>
@@ -125,10 +133,26 @@
 							<p>{{ $t('pages.app.hashes') }}</p>
 						</f7-block>
 						<f7-list class="no-title-limit item-padding-half" inset>
-							<f7-list-item v-if="suggestion.package.hashType === 'sha256'" :title="suggestion.package.hash.match(/.{1,2}/g).join(':').toUpperCase()" :header="`${$t('words.apk')} (${$t('words.sha256')})`"></f7-list-item>
-							<f7-list-item v-if="suggestion.package.hashType === 'sha512'" :title="suggestion.package.hash.match(/.{1,2}/g).join(':').toUpperCase()" :header="`${$t('words.apk')} (${$t('words.sha512')})`"></f7-list-item>
-							<f7-list-item v-if="suggestion.package.obbMainFileSha256" :title="suggestion.package.obbMainFileSha256.match(/.{1,2}/g).join(':').toUpperCase()" :header="`${$t('words.obbMain')} (${$t('words.sha256')})`"></f7-list-item>
-							<f7-list-item v-if="suggestion.package.obbPatchFileSha256" :title="suggestion.package.obbPatchFileSha256.match(/.{1,2}/g).join(':').toUpperCase()" :header="`${$t('words.obbPatch')} (${$t('words.sha256')})`"></f7-list-item>
+							<f7-list-item
+								v-if="suggestion.package.hashType === 'sha256'"
+								:header="`${$t('words.apk')} (${$t('words.sha256')})`"
+								:title="suggestion.package.hash.match(/.{1,2}/g).join(':').toUpperCase()"
+							></f7-list-item>
+							<f7-list-item
+								v-if="suggestion.package.hashType === 'sha512'"
+								:header="`${$t('words.apk')} (${$t('words.sha512')})`"
+								:title="suggestion.package.hash.match(/.{1,2}/g).join(':').toUpperCase()"
+							></f7-list-item>
+							<f7-list-item
+								v-if="suggestion.package.obbMainFileSha256"
+								:header="`${$t('words.obbMain')} (${$t('words.sha256')})`"
+								:title="suggestion.package.obbMainFileSha256.match(/.{1,2}/g).join(':').toUpperCase()"
+							></f7-list-item>
+							<f7-list-item
+								v-if="suggestion.package.obbPatchFileSha256"
+								:header="`${$t('words.obbPatch')} (${$t('words.sha256')})`"
+								:title="suggestion.package.obbPatchFileSha256.match(/.{1,2}/g).join(':').toUpperCase()"
+							></f7-list-item>
 						</f7-list>
 					</f7-accordion-content>
 				</f7-list-item>
@@ -211,7 +235,14 @@
 			<div v-if="!!(app.license || app.webSite || app.sourceCode || app.issueTracker || app.translation || app.changelog)">
 				<f7-block-title>{{ $t('words.links') }}</f7-block-title>
 				<f7-list>
-					<f7-list-item v-if="app.license" :footer="app.license" :link="`https://spdx.org/licenses/${app.license}`" :title="$t('words.license')" external target="_system">
+					<f7-list-item
+						v-if="app.license"
+						:footer="app.license"
+						:link="`https://spdx.org/licenses/${app.license}`"
+						:title="$t('words.license')"
+						external
+						target="_system"
+					>
 						<f7-icon slot="media" aurora="f7:doc_text" ios="f7:doc_text" md="material:copyright"></f7-icon>
 					</f7-list-item>
 					<f7-list-item v-if="app.webSite" :footer="app.webSite" :link="app.webSite" :title="$t('words.website')" external target="_system">
@@ -336,20 +367,22 @@ export default {
 					this.appIcon = icons[app.icon] ? icons[app.icon] : null;
 				});
 
-				fetchIcons(this.appGraphicsBundle.map(graphic => ({icon: graphic})), this.appGraphics, this.$f7.data.server, this.$store.state.settings.assetsAge).then(appGraphics => {
-					this.appGraphics = {
-						...this.appGraphics,
-						...appGraphics,
-					};
-				});
-
-				this.appScreenshotsBundle.forEach(screenshots => {
-					fetchIcons(screenshots.map(screenshot => ({icon: screenshot})), this.appScreenshots, this.$f7.data.server, this.$store.state.settings.assetsAge).then(appScreenshots => {
-						this.appScreenshots = {
-							...this.appScreenshots,
-							...appScreenshots,
+				fetchIcons(this.appGraphicsBundle.map(graphic => ({icon: graphic})), this.appGraphics, this.$f7.data.server, this.$store.state.settings.assetsAge)
+					.then(appGraphics => {
+						this.appGraphics = {
+							...this.appGraphics,
+							...appGraphics,
 						};
 					});
+
+				this.appScreenshotsBundle.forEach(screenshots => {
+					fetchIcons(screenshots.map(screenshot => ({icon: screenshot})), this.appScreenshots, this.$f7.data.server, this.$store.state.settings.assetsAge)
+						.then(appScreenshots => {
+							this.appScreenshots = {
+								...this.appScreenshots,
+								...appScreenshots,
+							};
+						});
 				});
 			},
 			immediate: true,
@@ -505,7 +538,7 @@ export default {
 				this.suggestion = {
 					package: this.packages[0],
 					installed: false,
-				}
+				};
 			}
 		},
 		share: function() {

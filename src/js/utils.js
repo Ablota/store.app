@@ -1,4 +1,4 @@
-import { Request, Device } from 'framework7';
+import {Device, Request} from 'framework7';
 import sanitizeHtml from 'sanitize-html';
 
 import sourceValidator from '../validators/source';
@@ -38,7 +38,13 @@ export function fetchSource(url, server, age = 6) {
 								}
 							});
 
-							['phoneScreenshots', 'sevenInchScreenshots', 'tenInchScreenshots', 'tvScreenshots', 'wearScreenshots'].forEach(assets => app.localized[key][assets].forEach((asset, index) => {
+							[
+								'phoneScreenshots',
+								'sevenInchScreenshots',
+								'tenInchScreenshots',
+								'tvScreenshots',
+								'wearScreenshots',
+							].forEach(assets => app.localized[key][assets].forEach((asset, index) => {
 								app.localized[key][assets][index] = `${url}${app.packageName}/${key}/${assets}/${asset}`;
 							}));
 						});
@@ -60,8 +66,8 @@ export function fetchSource(url, server, age = 6) {
 		};
 
 		if(Device.cordova) {
-			window.resolveLocalFileSystemURL(cordova.file.dataDirectory,  dataDirectory => {
-				dataDirectory.getDirectory('sources', { create: true, exclusive: false }, dataSourcesDirectory => {
+			window.resolveLocalFileSystemURL(cordova.file.dataDirectory, dataDirectory => {
+				dataDirectory.getDirectory('sources', {create: true, exclusive: false}, dataSourcesDirectory => {
 					ablota.store.file.hashName(url, data => {
 						const fetchIndex = () => {
 							ablota.store.file.download(`${url}index-v1.jar`, `${cordova.file.dataDirectory}sources/${data.hash}.jar`, {}, {}, data => {
@@ -79,7 +85,7 @@ export function fetchSource(url, server, age = 6) {
 							}, () => reject('request'));
 						};
 
-						dataSourcesDirectory.getFile(`${data.hash}.jar`, { create: false }, sourceFile => {
+						dataSourcesDirectory.getFile(`${data.hash}.jar`, {create: false}, sourceFile => {
 							sourceFile.file(file => {
 								if(file.lastModified < new Date().getTime() - age * 60 * 60 * 1000) {
 									fetchIndex();
@@ -130,8 +136,8 @@ export function fetchAsset(url, server, age = 24) {
 					};
 
 					window.resolveLocalFileSystemURL(cordova.file.cacheDirectory, cacheDirectory => {
-						cacheDirectory.getDirectory('assets', { create: true, exclusive: false }, cacheAssetsDirectory => {
-							cacheAssetsDirectory.getFile(data.hash, { create: false }, assetFile => {
+						cacheDirectory.getDirectory('assets', {create: true, exclusive: false}, cacheAssetsDirectory => {
+							cacheAssetsDirectory.getFile(data.hash, {create: false}, assetFile => {
 								assetFile.file(file => {
 									if(file.lastModified < new Date().getTime() - age * 60 * 60 * 1000) {
 										downloadAsset();
@@ -154,7 +160,7 @@ export function fetchAsset(url, server, age = 24) {
 		} else {
 			resolve({
 				originalUrl: url,
-				localUrl: `${server.url}v1/proxy/asset?url=${url}`
+				localUrl: `${server.url}v1/proxy/asset?url=${url}`,
 			});
 		}
 	});
@@ -323,7 +329,7 @@ export function downloadPackage(app, appPackage, updateCallback) {
 		};
 
 		window.resolveLocalFileSystemURL(cordova.file.cacheDirectory, cacheDirectory => {
-			cacheDirectory.getDirectory('packages', { create: true, exclusive: false }, packagesDirectory => {
+			cacheDirectory.getDirectory('packages', {create: true, exclusive: false}, packagesDirectory => {
 				ablota.store.file.download(appPackage.apkName, packageFilePath, {}, {}, data => {
 					if(data.status === 'success') {
 						ablota.store.file.hash(packageFilePath, data => {
@@ -331,7 +337,7 @@ export function downloadPackage(app, appPackage, updateCallback) {
 								if(data.hash.toLowerCase() === appPackage.hash) {
 									finish('package');
 								} else {
-									packagesDirectory.getFile(packageFilePath, { create: false }, packageFileEntry => {
+									packagesDirectory.getFile(packageFilePath, {create: false}, packageFileEntry => {
 										packageFileEntry.remove();
 									});
 
@@ -360,9 +366,9 @@ export function downloadPackage(app, appPackage, updateCallback) {
 
 			if(appPackage[obbFile] && appPackage[`${obbFile}Sha256`]) {
 				window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory, externalRootDirectory => {
-					externalRootDirectory.getDirectory('Android', { create: true, exclusive: false }, androidDirectory => {
-						androidDirectory.getDirectory('obb', { create: true, exclusive: false }, obbDirectory => {
-							obbDirectory.getDirectory(appPackage.packageName, { create: true, exclusive: false }, appPackageDirectory => {
+					externalRootDirectory.getDirectory('Android', {create: true, exclusive: false}, androidDirectory => {
+						androidDirectory.getDirectory('obb', {create: true, exclusive: false}, obbDirectory => {
+							obbDirectory.getDirectory(appPackage.packageName, {create: true, exclusive: false}, appPackageDirectory => {
 								const obbFilename = appPackage[obbFile].substring(appPackage[obbFile].lastIndexOf('/') + 1);
 								const obbFilePath = `${cordova.file.externalCacheDirectory}/${obbFilename}`;
 								const downloadObbFile = () => {
@@ -374,14 +380,14 @@ export function downloadPackage(app, appPackage, updateCallback) {
 												if(data.status === 'success') {
 													if(data.hash.toLowerCase() === appPackage[`${obbFile}Sha256`]) {
 														window.resolveLocalFileSystemURL(cordova.file.externalCacheDirectory, externalCacheDirectory => {
-															externalCacheDirectory.getFile(obbFilename, { create: false }, obbFileEntry => {
+															externalCacheDirectory.getFile(obbFilename, {create: false}, obbFileEntry => {
 																obbFileEntry.moveTo(appPackageDirectory, obbFilename, () => {
 																	finish(obbName);
 																}, () => reject('utils.downloadPackage.directory'));
 															}, () => reject('utils.downloadPackage.directory'));
 														}, () => reject('utils.downloadPackage.directory'));
 													} else {
-														appPackageDirectory.getFile(obbFilename, { create: false }, obbFileEntry => {
+														appPackageDirectory.getFile(obbFilename, {create: false}, obbFileEntry => {
 															obbFileEntry.remove();
 														});
 
@@ -403,7 +409,7 @@ export function downloadPackage(app, appPackage, updateCallback) {
 								};
 
 								finished[obbName] = false;
-								appPackageDirectory.getFile(obbFilename, { create: false }, () => {
+								appPackageDirectory.getFile(obbFilename, {create: false}, () => {
 									ablota.store.file.hash(`${cordova.file.externalRootDirectory}Android/obb/${appPackage.packageName}/${obbFilename}`, data => {
 										if(data.status === 'success') {
 											if(data.hash.toLowerCase() === appPackage[`${obbFile}Sha256`]) {
