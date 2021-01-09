@@ -500,7 +500,7 @@ export function suggestPackage(app, packages, deviceInfo) {
 						}
 					}
 					if(!suggestion) {
-						if(allPackages[0].versionName === compatiblePackages[0].versionName) {
+						if(compatiblePackages.length && allPackages[0].versionName === compatiblePackages[0].versionName) {
 							suggestion = compatiblePackages[0];
 						} else {
 							suggestion = allPackages[0];

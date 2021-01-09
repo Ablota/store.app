@@ -414,6 +414,7 @@ export default {
 					return;
 				}
 
+				this.$$('.fab-uninstall').hide();
 				this.installPackageCancelled = false;
 
 				const fakeProgress = setInterval(() => update({
@@ -471,17 +472,20 @@ export default {
 								},
 							});
 							this.$f7.fab.close('.fab-install');
+							this.$$('.fab-uninstall').show();
 						} else if(data.status === 'failure' || (data.status === 'success' && data.code !== 0)) {
 							this.$f7.toast.show({
 								text: this.$t('pages.app.install.failure'),
 							});
 							this.$f7.fab.close('.fab-install');
+							this.$$('.fab-uninstall').show();
 						}
 
 						this.checkPackages();
 					}, data => {
 						this.$f7.dialog.alert(this.$t(data));
 						this.$f7.fab.close('.fab-install');
+						this.$$('.fab-uninstall').show();
 					});
 				}).catch(data => {
 					this.$f7.dialog.alert(this.$t(data));
@@ -495,7 +499,10 @@ export default {
 		cancelInstallPackage: function() {
 			this.installPackageCancelled = true;
 
-			setTimeout(() => this.$f7.fab.close('.fab-install'), 1000);
+			setTimeout(() => {
+				this.$f7.fab.close('.fab-install');
+				this.$$('.fab-uninstall').show();
+			}, 1000);
 		},
 		launchApp: function() {
 			if(!Device.cordova) return;

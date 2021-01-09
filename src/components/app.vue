@@ -18,7 +18,7 @@ export default {
 			f7params: {
 				id: 'com.ablota.store',
 				name: 'Ablota Store',
-				version: '1.0.1',
+				version: '1.0.2',
 				theme: 'auto',
 				data: function() {
 					return {

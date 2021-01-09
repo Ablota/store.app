@@ -35,7 +35,8 @@
 
 		<% for (var index in htmlWebpackPlugin.files.css) { %>
 		<link as="style" href="<%= htmlWebpackPlugin.files.css[index] %>" rel="preload">
-		<% } %> <% for (var index in htmlWebpackPlugin.files.js) { %>
+		<% } %>
+		<% for (var index in htmlWebpackPlugin.files.js) { %>
 		<link as="script" href="<%= htmlWebpackPlugin.files.js[index] %>" rel="preload">
 		<% } %>
 
