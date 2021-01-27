@@ -78,6 +78,12 @@
 						link
 						@click="add.address = 'https://archive.newpipe.net/fdroid/repo/'; add.fingerprint = 'E2402C78F9B97C6C89E97DB914A2751FDA1D02FE2039CC0897A462BDB57E7501'; submitAdd();"
 					/>
+					<f7-list-item
+						:footer="$t('pages.sources.add.suggestions.guardianProject.description')"
+						:title="$t('pages.sources.add.suggestions.guardianProject.title')"
+						link
+						@click="add.address = 'https://guardianproject.info/fdroid/repo/'; add.fingerprint = 'B7C2EEFD8DAC7806AF67DFCD92EB18126BC08312A7F2D6F3862E46013C7A6135'; submitAdd();"
+					/>
 				</f7-list>
 			</f7-page>
 		</f7-popup>

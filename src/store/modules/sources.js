@@ -96,6 +96,17 @@ const actions = {
 							server,
 							sourceAge,
 						});
+					} else {
+						ablota.store.package.info('com.thehackstore.app', data => {
+							if(data.status === 'success') {
+								dispatch('add', {
+									address: 'https://the-hack-store.com/repo/',
+									fingerprint: 'd0b9ec81e1435cf13bc9a28768ca9f498db320d54c93c7a9e9db744e4a65e173',
+									server,
+									sourceAge,
+								});
+							}
+						});
 					}
 				});
 			}

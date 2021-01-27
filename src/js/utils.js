@@ -9,7 +9,10 @@ export function fetchSource(url, server, age = 6) {
 			sourceValidator.validateAsync(source, {
 				abortEarly: false,
 				allowUnknown: true,
-				stripUnknown: true,
+				stripUnknown: {
+					arrays: true,
+					objects: true,
+				},
 			}).then(validatedSource => {
 				if(validatedSource.repo.maxage) {
 					const maxDate = validatedSource.repo.timestamp;

@@ -8,7 +8,7 @@
 				icon-ios="f7:house_fill"
 				icon-md="material:home"
 				route-tab-id="home"
-				tab-link="#home"
+				tab-link
 			></f7-link>
 			<f7-link
 				:text="$t('pages.categories.title')"
@@ -17,7 +17,7 @@
 				icon-ios="f7:square_list_fill"
 				icon-md="material:view_list"
 				route-tab-id="categories"
-				tab-link="#categories"
+				tab-link
 			></f7-link>
 			<f7-link
 				:text="$t('pages.sources.title')"
@@ -26,7 +26,7 @@
 				icon-ios="f7:tray_2_fill"
 				icon-md="material:all_inbox"
 				route-tab-id="sources"
-				tab-link="#sources"
+				tab-link
 			></f7-link>
 			<f7-link
 				v-if="cordova"
@@ -36,7 +36,7 @@
 				icon-ios="f7:circle_grid_3x3"
 				icon-md="material:apps"
 				route-tab-id="manager"
-				tab-link="#manager"
+				tab-link
 			></f7-link>
 		</f7-toolbar>
 		<f7-tabs routable>

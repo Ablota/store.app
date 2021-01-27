@@ -1,5 +1,5 @@
 <template>
-	<f7-page name="manager">
+	<f7-page name="manager" @page:beforein="checkApps">
 		<f7-navbar large>
 			<f7-nav-left>
 				<f7-link href="/about/" icon-aurora="f7:menu" icon-ios="f7:menu" icon-md="material:menu"/>
@@ -243,6 +243,8 @@ export default {
 				clearTimeout(interactionTimeout);
 				interactionTimeout = setTimeout(() => this.fetchIcons(), 1000);
 			});
+
+			setInterval(() => this.checkApps(), 60000);
 		});
 	},
 };

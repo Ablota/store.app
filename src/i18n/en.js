@@ -87,9 +87,10 @@ export default {
 						title: 'NewPipe',
 						description: 'A libre lightweight streaming frontend for Android.',
 					},
-				},
-				errors: {
-					validation: 'The ',
+					guardianProject: {
+						title: 'Guardian Project',
+						description: 'Guardian Project creates easy to use secure apps, open-source software libraries, and customized solutions that can be used around the world.',
+					},
 				},
 			},
 		},
